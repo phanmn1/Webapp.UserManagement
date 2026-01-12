@@ -1,4 +1,4 @@
-namespace Webapp.UserManagement
+namespace UserManagement
 {
     public class WeatherForecast
     {

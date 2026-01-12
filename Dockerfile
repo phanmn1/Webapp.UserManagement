@@ -1,0 +1,34 @@
+# syntax=docker/dockerfile:1
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS base
+
+FROM base as deps
+WORKDIR /source
+COPY ./AplusCSEMSCore/AplusCSEMSCore.csproj .
+RUN dotnet restore
+COPY ./AplusCSEMSCore . 
+
+FROM deps AS development
+CMD [ "dotnet", "watch", "--no-launch-profile" ]
+
+FROM deps AS build
+# install missing libicu for System.Globalization.Calendars when invariant mode is set to false
+RUN dotnet publish -c release -o /app --no-restore
+
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS release
+RUN apk add --update icu-libs
+WORKDIR /app
+COPY --from=build . .
+ARG UID=10001
+RUN adduser \
+    --disabled-password \
+    --gecos "" \
+    --home "/nonexistent" \
+    --shell "/sbin/nologin" \
+    --no-create-home \
+    --uid "${UID}" \
+    appuser
+USER appuser
+COPY --from=build /app ./
+ENTRYPOINT [ "dotnet", "AplusCSEMSCore.dll" ]
