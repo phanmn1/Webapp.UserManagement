@@ -14,6 +14,9 @@ services:
       - ASPNETCORE_HTTPS_PORTS=443
       - ASPNETCORE_HTTP_PORTS=80
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+
+      # Connection Strings
+      - ConnectionStrings__AuthDB=${AUTH_DB_CONNECTION_STRING}
     develop:
       watch:
         - action: sync
@@ -22,4 +25,20 @@ services:
     ports: 
       - 8000:80
       - 8081:443
-    
+  
+  webapp-sql-db:  
+    profiles:
+      - dev
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1434:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${SQL_SERVER_PASSWORD}  # Must meet complexity requirements
+      - MSSQL_PID=Developer                       # Options: Developer, Express, Standard, Enterprise
+    volumes:
+      - mssql_data:/var/opt/mssql
+    restart: always
+
+volumes: 
+  mssql_data:
