@@ -4,9 +4,9 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS base
 
 FROM base as deps
 WORKDIR /source
-COPY ./AplusCSEMSCore/AplusCSEMSCore.csproj .
+COPY ./UserManagement/UserManagement.csproj .
 RUN dotnet restore
-COPY ./AplusCSEMSCore . 
+COPY ./UserManagement . 
 
 FROM deps AS development
 CMD [ "dotnet", "watch", "--no-launch-profile" ]

@@ -1,0 +1,25 @@
+services:
+  webapp-backend-dev:
+    profiles:
+      - dev
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile 
+      target: development
+    container_name: webapp-backend
+    environment:
+      # Localhost certificate configs
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/source/https/aspnetapp.pfx
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTPS_PORTS=443
+      - ASPNETCORE_HTTP_PORTS=80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${CERT_PASSWORD}
+    develop:
+      watch:
+        - action: sync
+          path: ./backend/UserManagement
+          target: /source/UserManagement
+    ports: 
+      - 8000:80
+      - 8081:443
+    
