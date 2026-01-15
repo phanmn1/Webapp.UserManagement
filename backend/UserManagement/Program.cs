@@ -27,7 +27,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Configure Authorization to use sql server
 builder.Services.AddIdentityCore<User>()
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<AuthDBContext>();
+    .AddEntityFrameworkStores<AuthDBContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization();
 
@@ -56,7 +57,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

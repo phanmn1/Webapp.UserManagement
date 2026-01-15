@@ -9,7 +9,7 @@ RUN dotnet restore
 COPY ./UserManagement . 
 
 FROM deps AS development
-CMD [ "dotnet", "watch", "--no-launch-profile" ]
+CMD ["dotnet", "watch", "run", "--no-launch-profile", "--hot-reload-on", "rude-edit"]
 
 FROM deps AS build
 # install missing libicu for System.Globalization.Calendars when invariant mode is set to false
