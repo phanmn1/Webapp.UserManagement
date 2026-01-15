@@ -2,7 +2,7 @@
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS base
 
-FROM base as deps
+FROM base AS deps
 WORKDIR /source
 COPY ./UserManagement/UserManagement.csproj .
 RUN dotnet restore

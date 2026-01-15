@@ -7,6 +7,9 @@ services:
       dockerfile: Dockerfile 
       target: development
     container_name: webapp-backend
+    depends_on:
+      webapp-sql-db: 
+        condition: service_healthy
     environment:
       # Localhost certificate configs
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/source/https/aspnetapp.pfx
@@ -30,6 +33,7 @@ services:
     profiles:
       - dev
     image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: docker-mssql
     ports:
       - 1434:1433
     environment:
@@ -38,6 +42,12 @@ services:
       - MSSQL_PID=Developer                       # Options: Developer, Express, Standard, Enterprise
     volumes:
       - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P ${SQL_SERVER_PASSWORD} -Q 'select 1'"
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
     restart: always
 
 volumes: 
