@@ -21,6 +21,9 @@ Console.WriteLine($"Auth Connection String: {authConnectionString}");
 builder.Services.AddDbContext<AuthDBContext>(options =>
     options.UseSqlServer(authConnectionString));
 
+builder.Services.AddDbContext<AppDBContext>(options =>
+    options.UseSqlServer(authConnectionString));
+
 // Add Authentication
 builder.Services.AddCustomAuth(builder.Configuration);
 
@@ -42,11 +45,14 @@ if (app.Environment.IsDevelopment())
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
-        var context = services.GetRequiredService<AuthDBContext>();
+        var authContext = services.GetRequiredService<AuthDBContext>();
+        var appContext = services.GetRequiredService<AppDBContext>();
+
         try
         {
             // Applies any pending migrations
-            context.Database.Migrate();
+            authContext.Database.Migrate();
+            appContext.Database.Migrate();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             // Define your roles here
             string[] roleNames = { "Admin", "User", "Manager" };
