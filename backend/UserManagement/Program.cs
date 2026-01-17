@@ -75,6 +75,14 @@ if (app.Environment.IsDevelopment())
         }
     }
 
+    using (IServiceScope scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var appContext = services.GetRequiredService<AppDBContext>();
+
+        await Seed.SeedLocation(appContext, false, CancellationToken.None);
+    }
+
 }
 
 app.UseHttpsRedirection();
