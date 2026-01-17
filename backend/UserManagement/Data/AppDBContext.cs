@@ -9,6 +9,7 @@ namespace UserManagement.Data
 
     public DbSet<Location> Location { get; set; }
     public DbSet<User> User { get; set; }
+    public DbSet<UserLocation> UserLocations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

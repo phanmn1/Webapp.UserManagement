@@ -7,6 +7,8 @@ using UserManagement.Data;
 using UserManagement.Models;
 using System.Security.Claims;
 using UserManagement.Extensions;
+using UserManagement.Auth;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,7 @@ builder.Services.AddIdentityCore<User>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<IAuthorizationHandler, LocationPermissionHandler>();
 
 var app = builder.Build();
 
