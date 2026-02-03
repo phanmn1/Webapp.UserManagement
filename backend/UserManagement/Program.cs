@@ -7,7 +7,7 @@ using UserManagement.Data;
 using UserManagement.Models;
 using System.Security.Claims;
 using UserManagement.Extensions;
-using UserManagement.Auth;
+using UserManagement.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,8 +36,13 @@ builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<AuthDBContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddAuthorization();
-builder.Services.AddScoped<IAuthorizationHandler, LocationPermissionHandler>();
+
+builder.Services.AddScoped<IAuthorizationHandler, LocationHandler>();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(AppPolicies.UserInSameLocation, policy =>
+        policy.Requirements.Add(new UserInSameLocation()));
+});
 
 var app = builder.Build();
 

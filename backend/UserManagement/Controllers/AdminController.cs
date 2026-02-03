@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using UserManagement.Authorization;
 
 namespace UserManagement.Controllers
 {
@@ -23,6 +24,7 @@ namespace UserManagement.Controllers
     }
 
     [HttpGet("{locationId}")]
+    [Authorize(Policy = AppPolicies.UserInSameLocation)]
     [Authorize(Roles = "Admin")]
     public IActionResult Get(int locationId)
     {
